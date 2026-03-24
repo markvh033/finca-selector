@@ -1,0 +1,64 @@
+# ── Node ──────────────────────────────────────────────────────────────────────
+node_modules/
+dist/
+dist-ssr/
+*.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ── Environment / secrets ──────────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+!server/.env.example
+
+# ── Python ────────────────────────────────────────────────────────────────────
+map_analysis/.venv/
+map_analysis/__pycache__/
+map_analysis/*.pyc
+map_analysis/or_cache/
+map_analysis/tile_cache/
+map_analysis/ocr_cache/
+**/__pycache__/
+*.pyc
+*.pyo
+
+# ── Generated map tiles (large, regenerate with gen_tiles.py) ─────────────────
+map_analysis/tiles/
+
+# ── Extraction outputs (regenerate with extract_openrouter.py) ────────────────
+map_analysis/fincas.geojson
+map_analysis/fincas.csv
+
+# ── Large source files ────────────────────────────────────────────────────────
+map_analysis/*.pdf
+map_analysis/*.jpg
+map_analysis/*.png
+
+# ── Docker / DB ───────────────────────────────────────────────────────────────
+postgres_data/
+
+# ── Editor ────────────────────────────────────────────────────────────────────
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ── OS ────────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── Playwright ────────────────────────────────────────────────────────────────
+.playwright/
+scraping_analysis/rp-storage-state.json
+scraping_analysis/captures/
+map_analysis/
+scraping_analysis/
+playwright-*.mjs
+README.md

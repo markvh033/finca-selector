@@ -1,0 +1,38 @@
+{
+  "name": "panama_vinkas",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "test:rp-search-page": "node playwright-rp-search-page.mjs",
+    "rp:login": "node playwright-rp-persistent-login.mjs live",
+    "rp:check": "node playwright-rp-persistent-login.mjs check",
+    "rp:capture": "node playwright-rp-capture-session.mjs"
+  },
+  "dependencies": {
+    "maplibre-gl": "^5.21.0",
+    "pdfjs-dist": "^5.5.207",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "react-map-gl": "^8.1.0",
+    "react-router-dom": "^7.13.2"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.4",
+    "@tailwindcss/vite": "^4.2.2",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "eslint": "^9.39.4",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "globals": "^17.4.0",
+    "playwright": "^1.54.2",
+    "tailwindcss": "^4.2.2",
+    "vite": "^8.0.1"
+  }
+}
