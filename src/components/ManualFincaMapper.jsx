@@ -47,11 +47,7 @@ function formatDate(iso) {
 }
 
 // ── Helpers ────────────────────────────────────────────────────────────────
-function loadFincas() {
-  try { return JSON.parse(localStorage.getItem(LS_KEY) || '[]') }
-  catch { return [] }
-}
-
+// localStorage is write-through backup only — DB is source of truth
 function saveFincas(list) {
   localStorage.setItem(LS_KEY, JSON.stringify(list))
 }
@@ -83,8 +79,8 @@ const EMPTY_FORM = { finca: '', tomo: '', folio: '', notes: '', confidence: '0.9
 
 // ══════════════════════════════════════════════════════════════════════════
 export default function ManualFincaMapper({ onBack }) {
-  // Finca data
-  const [fincas, setFincas] = useState(loadFincas)
+  // Finca data — start empty, DB load on mount is the source of truth
+  const [fincas, setFincas] = useState([])
 
   // UI state
   const [adding, setAdding] = useState(false)          // crosshair mode
@@ -112,17 +108,23 @@ export default function ManualFincaMapper({ onBack }) {
 
   const fincaInputRef = useRef(null)
 
-  // ── Load fincas from API on mount ────────────────────────────────────────
+  // ── Load fincas from DB on mount — DB is source of truth ─────────────────
   useEffect(() => {
-    const token = localStorage.getItem('finca_token')
-    if (!token) return  // no auth, use localStorage fallback
     api.getFincas()
-      .then(rows => setFincas(rows.map(dbToLocal)))
-      .catch(() => {/* silently fall back to localStorage */})
+      .then(rows => {
+        const loaded = rows.map(dbToLocal)
+        setFincas(loaded)
+        saveFincas(loaded)   // keep localStorage in sync as backup
+      })
+      .catch(err => {
+        console.error('Failed to load from DB:', err)
+        // Only fall back to localStorage if DB is unreachable
+        try {
+          const cached = JSON.parse(localStorage.getItem(LS_KEY) || '[]')
+          if (cached.length) setFincas(cached)
+        } catch {}
+      })
   }, [])
-
-  // ── Persist fincas to localStorage ───────────────────────────────────────
-  useEffect(() => { saveFincas(fincas) }, [fincas])
 
   // ── Map init ─────────────────────────────────────────────────────────────
   useEffect(() => {
