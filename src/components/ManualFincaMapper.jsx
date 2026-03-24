@@ -235,10 +235,10 @@ export default function ManualFincaMapper({ onBack }) {
     cleanup()
     map.addSource(SOURCE_ID, {
       type: 'raster',
-      tiles: ['/maps/tiles/{z}/{x}/{y}.png'],
+      tiles: ['/tiles/{z}/{x}/{y}.png'],
       tileSize: 256,
       minzoom: 15,
-      maxzoom: 21,
+      maxzoom: 19,
       attribution: '1964 Catastral Panama',
     })
     map.addLayer({
