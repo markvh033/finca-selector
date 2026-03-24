@@ -238,7 +238,7 @@ export default function ManualFincaMapper({ onBack }) {
       tiles: ['/tiles/{z}/{x}/{y}.png'],
       tileSize: 256,
       minzoom: 15,
-      maxzoom: 19,
+      maxzoom: 20,
       attribution: '1964 Catastral Panama',
     })
     map.addLayer({
