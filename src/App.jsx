@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import ManualFincaMapper from './components/ManualFincaMapper';
+import FincaDetail from './pages/FincaDetail';
 import LoginPage from './components/LoginPage';
 
 function RequireAuth({ children }) {
@@ -19,6 +20,14 @@ export default function App() {
           element={
             <RequireAuth>
               <ManualFincaMapper />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/finca/:finca"
+          element={
+            <RequireAuth>
+              <FincaDetail />
             </RequireAuth>
           }
         />

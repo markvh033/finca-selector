@@ -62,3 +62,7 @@ map_analysis/
 scraping_analysis/
 playwright-*.mjs
 README.md
+
+# ── Uploads volume (Railway mounts this, not tracked in repo) ───────────────
+data/
+*.pdf
