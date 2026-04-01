@@ -367,7 +367,8 @@ app.post('/api/fincas/:id/photos', auth, uploadPhotos.array('photos', 3), wrap(a
 
   const { rows } = await pool.query('SELECT photo_1,photo_2,photo_3 FROM finca_points WHERE id=$1', [dbId])
   const current = [rows[0].photo_1, rows[0].photo_2, rows[0].photo_3]
-  const newPaths = req.files.map(f => `/uploads/fincas/${dbId}/photos/${f.filename}`)
+  // Path must match what multer used as directory (req.params.id), not the resolved dbId
+  const newPaths = req.files.map(f => `/uploads/fincas/${req.params.id}/photos/${f.filename}`)
 
   for (const p of newPaths) {
     const slot = current.findIndex(s => !s)
@@ -415,7 +416,8 @@ app.post('/api/fincas/:id/pdf', auth, uploadPdf.single('pdf'), wrap(async (req, 
   const dbId = await resolveDbId(req.params.id)
   if (!dbId) return res.status(404).json({ error: 'Not found' })
 
-  const relativePath = `/uploads/fincas/${dbId}/documents/${req.file.filename}`
+  // Path must match multer destination (req.params.id), not the resolved dbId
+  const relativePath = `/uploads/fincas/${req.params.id}/documents/${req.file.filename}`
 
   await pool.query(
     `UPDATE finca_points SET pdf_path=$1, updated_at=NOW(), updated_by=$2 WHERE id=$3`,
