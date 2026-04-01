@@ -76,6 +76,80 @@ function FincaMiniMap({ lat, lng, finca }) {
   )
 }
 
+// ── Top carousel: map + uploaded photos ────────────────────────────────────
+function TopCarousel({ lat, lng, finca, photo1, photo2, photo3 }) {
+  const BASE = import.meta.env.VITE_API_URL || ''
+  const photos = [photo1, photo2, photo3].filter(Boolean).map(p => `${BASE}${p}`)
+  const slides = ['map', ...photos]   // first slide is always the map
+  const [idx, setIdx] = useState(0)
+
+  const prev = () => setIdx(i => (i - 1 + slides.length) % slides.length)
+  const next = () => setIdx(i => (i + 1) % slides.length)
+
+  return (
+    <div className="relative rounded-xl overflow-hidden border border-stone-200 shadow-sm bg-stone-900" style={{ height: 320 }}>
+
+      {/* Slides */}
+      {slides.map((slide, i) => (
+        <div
+          key={i}
+          className="absolute inset-0 transition-opacity duration-300"
+          style={{ opacity: i === idx ? 1 : 0, pointerEvents: i === idx ? 'auto' : 'none' }}
+        >
+          {slide === 'map'
+            ? <FincaMiniMap lat={lat} lng={lng} finca={finca} />
+            : <img src={slide} alt={`Photo ${i}`} className="w-full h-full object-cover" />
+          }
+        </div>
+      ))}
+
+      {/* Arrows — only show when there's more than one slide */}
+      {slides.length > 1 && (
+        <>
+          <button
+            onClick={prev}
+            className="absolute left-3 top-1/2 -translate-y-1/2 z-30 w-9 h-9 rounded-full bg-black/50 hover:bg-black/75 text-white flex items-center justify-center transition-all shadow-lg backdrop-blur-sm"
+            aria-label="Previous"
+          >
+            ‹
+          </button>
+          <button
+            onClick={next}
+            className="absolute right-3 top-1/2 -translate-y-1/2 z-30 w-9 h-9 rounded-full bg-black/50 hover:bg-black/75 text-white flex items-center justify-center transition-all shadow-lg backdrop-blur-sm"
+            aria-label="Next"
+          >
+            ›
+          </button>
+
+          {/* Dot indicators */}
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-30 flex gap-1.5">
+            {slides.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setIdx(i)}
+                className="transition-all rounded-full"
+                style={{
+                  width:  i === idx ? 20 : 6,
+                  height: 6,
+                  background: i === idx ? 'white' : 'rgba(255,255,255,0.5)',
+                }}
+                aria-label={`Go to slide ${i + 1}`}
+              />
+            ))}
+          </div>
+
+          {/* Slide label */}
+          <div className="absolute top-3 left-3 z-30">
+            <span className="text-[10px] font-semibold bg-black/50 text-white px-2 py-1 rounded backdrop-blur-sm">
+              {idx === 0 ? '🗺 Map' : `📷 Photo ${idx}`}
+            </span>
+          </div>
+        </>
+      )}
+    </div>
+  )
+}
+
 // ── Field helpers ──────────────────────────────────────────────────────────
 function Field({ label, value, onChange, type = 'text', readOnly = false, placeholder = '' }) {
   return (
@@ -539,8 +613,11 @@ export default function FincaDetail() {
       {/* ── Body ──────────────────────────────────────────────────── */}
       <div className="max-w-6xl mx-auto px-6 py-6 space-y-5">
 
-        {/* ── Mini-map — top of page, full width ── */}
-        <FincaMiniMap lat={finca.lat} lng={finca.lng} finca={finca.finca || fincaSlug} />
+        {/* ── Top carousel: map + photos ── */}
+        <TopCarousel
+          lat={finca.lat} lng={finca.lng} finca={finca.finca || fincaSlug}
+          photo1={finca.photo_1} photo2={finca.photo_2} photo3={finca.photo_3}
+        />
 
         {/* Error banner */}
         {error && (
