@@ -178,6 +178,8 @@ export default function ManualFincaMapper() {
   const [searchBarrio,  setSearchBarrio]  = useState('all')
   const [searchMinArea, setSearchMinArea] = useState('')
   const [searchMaxArea, setSearchMaxArea] = useState('')
+  const [searchPatrimonio, setSearchPatrimonio] = useState('')
+  const [searchPropietario, setSearchPropietario] = useState('')
   const [barrios,       setBarrios]       = useState([])
   const [searching,     setSearching]     = useState(false)
 
@@ -316,8 +318,16 @@ export default function ManualFincaMapper() {
 
         outer.addEventListener('click', (e) => {
           e.stopPropagation()
-          setPanelFinca(f)
-          setPendingLngLat(null)
+          const map = mapRef.current
+          if (map) {
+            try {
+              sessionStorage.setItem(MAP_STATE, JSON.stringify({
+                center: [map.getCenter().lng, map.getCenter().lat],
+                zoom:   map.getZoom(),
+              }))
+            } catch {}
+          }
+          navigate(`/finca/${encodeURIComponent(f.finca?.trim() || f.id)}`)
         })
 
         const marker = new maplibregl.Marker({ element: outer, anchor: 'center' })
@@ -326,7 +336,7 @@ export default function ManualFincaMapper() {
         markersRef.current[f.id] = marker
       }
     })
-  }, [displayFincas, mapReady])   // panelFinca deliberately NOT a dep — use ref instead
+  }, [displayFincas, mapReady, navigate])   // panelFinca deliberately NOT a dep — use ref instead
 
   // ── Selection ring — update dots without touching the full markers effect ──
   useEffect(() => {
@@ -385,17 +395,26 @@ export default function ManualFincaMapper() {
 
   // ── Search ────────────────────────────────────────────────────────────
   const handleSearch = useCallback(async () => {
-    const params = { q: searchQ, barrio: searchBarrio === 'all' ? '' : searchBarrio, min_area: searchMinArea, max_area: searchMaxArea }
-    const hasFilter = searchQ.trim() || (searchBarrio && searchBarrio !== 'all') || searchMinArea || searchMaxArea
+    const params = {
+      q: searchQ,
+      barrio: searchBarrio === 'all' ? '' : searchBarrio,
+      min_area: searchMinArea,
+      max_area: searchMaxArea,
+      patrimonio: searchPatrimonio,
+      propietario: searchPropietario,
+    }
+    const hasFilter = searchQ.trim() || (searchBarrio && searchBarrio !== 'all') || searchMinArea || searchMaxArea || searchPatrimonio || searchPropietario
     if (!hasFilter) { setFiltered(null); return }
     setSearching(true)
     try { setFiltered((await api.searchFincas(params)).map(dbToLocal)) }
     catch (e) { console.error(e) }
     finally { setSearching(false) }
-  }, [searchQ, searchBarrio, searchMinArea, searchMaxArea])
+  }, [searchQ, searchBarrio, searchMinArea, searchMaxArea, searchPatrimonio, searchPropietario])
 
   const handleClearSearch = useCallback(() => {
-    setSearchQ(''); setSearchBarrio('all'); setSearchMinArea(''); setSearchMaxArea(''); setFiltered(null)
+    setSearchQ(''); setSearchBarrio('all'); setSearchMinArea(''); setSearchMaxArea('');
+    setSearchPatrimonio(''); setSearchPropietario('');
+    setFiltered(null)
   }, [])
 
   // ── Quick-add ─────────────────────────────────────────────────────────
@@ -494,7 +513,7 @@ export default function ManualFincaMapper() {
             >Sign out</button>
           </div>
           <h2 className="text-base font-semibold text-stone-800">Panama Fincas</h2>
-          <p className="text-xs text-stone-400 mt-0.5">Hover a dot to see the number · Click to open details</p>
+          <p className="text-xs text-stone-400 mt-0.5">Hover a dot to see the number · Click to go to details</p>
         </div>
 
         {/* Toolbar */}
@@ -561,6 +580,28 @@ export default function ManualFincaMapper() {
               <button onClick={handleClearSearch} className="ml-auto text-xs text-blue-500 hover:text-blue-700 underline">Clear</button>
             )}
           </div>
+          {/* Owner filter */}
+          <input
+            type="text"
+            placeholder="Filter by owner / propietario…"
+            value={searchPropietario}
+            onChange={e => setSearchPropietario(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && handleSearch()}
+            className="w-full px-2.5 py-1.5 text-xs rounded-md border border-stone-200 bg-white focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-400"
+          />
+          {/* Patrimonio category filter */}
+          <select
+            value={searchPatrimonio}
+            onChange={e => setSearchPatrimonio(e.target.value)}
+            className="w-full px-2 py-1.5 text-xs rounded-md border border-stone-200 bg-white focus:outline-none focus:ring-2 focus:ring-blue-300"
+          >
+            <option value="">All patrimonio categories</option>
+            <option value="1">Category 1</option>
+            <option value="2">Category 2</option>
+            <option value="3">Category 3</option>
+            <option value="4">Category 4</option>
+            <option value="5">Category 5</option>
+          </select>
         </div>
 
         {/* Add mode banner */}

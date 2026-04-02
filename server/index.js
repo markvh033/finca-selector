@@ -231,7 +231,7 @@ app.post('/api/auth/login', wrap(async (req, res) => {
 // ── GET /api/fincas/search ─────────────────────────────────────────────────
 // Must be before /api/fincas/:id so 'search' isn't treated as an id
 app.get('/api/fincas/search', auth, wrap(async (req, res) => {
-  const { q, barrio, min_area, max_area } = req.query
+  const { q, barrio, min_area, max_area, patrimonio, propietario } = req.query
   const conditions = []
   const params = []
 
@@ -264,6 +264,17 @@ app.get('/api/fincas/search', auth, wrap(async (req, res) => {
   if (max_area) {
     params.push(Number(max_area))
     conditions.push(`area_m2_map <= $${params.length}`)
+  }
+
+  if (patrimonio && patrimonio.trim()) {
+    params.push(patrimonio.trim())
+    conditions.push(`categoria_patrimonio = $${params.length}`)
+  }
+
+  if (propietario && propietario.trim()) {
+    const like = `%${propietario.trim().toLowerCase()}%`
+    params.push(like)
+    conditions.push(`LOWER(propietario) LIKE $${params.length}`)
   }
 
   const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : ''

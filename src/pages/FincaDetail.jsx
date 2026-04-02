@@ -740,12 +740,11 @@ export default function FincaDetail() {
                     className="px-3 py-2 text-sm rounded-lg border border-stone-200 bg-white focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-400"
                   >
                     <option value="">— Select category —</option>
-                    <option value="Patrimonio Histórico">Patrimonio Histórico</option>
-                    <option value="Patrimonio Natural">Patrimonio Natural</option>
-                    <option value="Interés Cultural">Interés Cultural</option>
-                    <option value="Uso Comercial">Uso Comercial</option>
-                    <option value="Uso Residencial">Uso Residencial</option>
-                    <option value="Otro">Otro</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
                   </select>
                 </div>
               </div>
