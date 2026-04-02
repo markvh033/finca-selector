@@ -465,43 +465,113 @@ export default function ManualFincaMapper() {
 
   // ── Render ────────────────────────────────────────────────────────────
   return (
-    <div className="flex h-screen overflow-hidden" style={{ background: '#f5f4f1', fontFamily: 'system-ui, sans-serif' }}>
+    <div className="flex flex-col h-screen overflow-hidden" style={{ background: '#f5f4f1', fontFamily: 'system-ui, sans-serif' }}>
 
-      {/* ── MAP ── */}
-      <div className="flex-1 relative min-w-0 min-h-0">
-        <div ref={containerRef} style={{ position: 'absolute', inset: 0 }} />
-
-        {/* Filter bar */}
-        {!pendingLngLat && (
-          <div className="absolute top-4 left-4 z-10 bg-white/95 backdrop-blur-sm rounded-2xl shadow-lg border border-stone-200 px-4 py-3 flex flex-wrap items-center gap-3" style={{maxWidth: 'calc(100% - 120px)'}}>
-            <span className="text-xs font-bold text-stone-500 uppercase tracking-wider shrink-0">Filter</span>
-            <FilterGroup label="Photos" icon="📷" value={filterPhotos} onChange={setFilterPhotos} />
-            <FilterGroup label="PDF" icon="📄" value={filterPdf} onChange={setFilterPdf} />
-            <FilterGroup label="Area (map)" icon="📐" value={filterAreaMap} onChange={setFilterAreaMap} />
-            <FilterGroup label="Area (RP)" icon="📏" value={filterAreaRp} onChange={setFilterAreaRp} />
-            <button onClick={handleApplyFilters} className="px-3 py-1.5 text-xs font-bold rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-sm shrink-0">
-              Apply
+      {/* ── TOP BAR ── */}
+      <div className="shrink-0 bg-white border-b border-stone-200 px-4 py-2 flex flex-col gap-2">
+        {/* Row 1 — search inputs */}
+        <div className="flex flex-wrap items-center gap-2">
+          <input
+            type="text"
+            placeholder="Search finca, owner, neighborhood…"
+            value={searchQ}
+            onChange={e => setSearchQ(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && handleSearch()}
+            className="min-w-[180px] flex-1 px-2.5 py-1.5 text-xs rounded-md border border-stone-200 bg-stone-50 focus:outline-none focus:ring-2 focus:ring-blue-300"
+          />
+          <select
+            value={searchBarrio}
+            onChange={e => setSearchBarrio(e.target.value)}
+            className="min-w-[140px] px-2.5 py-1.5 text-xs rounded-md border border-stone-200 bg-stone-50 focus:outline-none focus:ring-2 focus:ring-blue-300"
+          >
+            <option value="all">All neighborhoods</option>
+            {barrios.map(b => <option key={b} value={b}>{b}</option>)}
+          </select>
+          <input
+            type="text"
+            placeholder="Owner / propietario…"
+            value={searchPropietario}
+            onChange={e => setSearchPropietario(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && handleSearch()}
+            className="min-w-[140px] px-2.5 py-1.5 text-xs rounded-md border border-stone-200 bg-stone-50 focus:outline-none focus:ring-2 focus:ring-blue-300"
+          />
+          <select
+            value={searchPatrimonio}
+            onChange={e => setSearchPatrimonio(e.target.value)}
+            className="min-w-[160px] px-2.5 py-1.5 text-xs rounded-md border border-stone-200 bg-stone-50 focus:outline-none focus:ring-2 focus:ring-blue-300"
+          >
+            <option value="">All patrimonio categories</option>
+            <option value="1">Category 1</option>
+            <option value="2">Category 2</option>
+            <option value="3">Category 3</option>
+            <option value="4">Category 4</option>
+            <option value="5">Category 5</option>
+          </select>
+          <span className="text-xs text-stone-400 shrink-0">m²:</span>
+          <input
+            type="number"
+            placeholder="Min"
+            value={searchMinArea}
+            onChange={e => setSearchMinArea(e.target.value)}
+            className="w-16 px-2.5 py-1.5 text-xs rounded-md border border-stone-200 bg-stone-50 focus:outline-none focus:ring-2 focus:ring-blue-300"
+          />
+          <span className="text-xs text-stone-300">–</span>
+          <input
+            type="number"
+            placeholder="Max"
+            value={searchMaxArea}
+            onChange={e => setSearchMaxArea(e.target.value)}
+            className="w-16 px-2.5 py-1.5 text-xs rounded-md border border-stone-200 bg-stone-50 focus:outline-none focus:ring-2 focus:ring-blue-300"
+          />
+          <button
+            onClick={handleSearch}
+            disabled={searching}
+            className="px-3 py-1.5 text-xs font-semibold rounded-md bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 transition-all"
+          >
+            {searching ? '…' : 'Search'}
+          </button>
+          {(filtered !== null || filtersApplied) && (
+            <button
+              onClick={() => { handleClearSearch(); handleClearFilters(); }}
+              className="px-3 py-1.5 text-xs font-medium rounded-md bg-stone-100 text-stone-600 hover:bg-stone-200 transition-all"
+            >
+              Clear
             </button>
-            {filtersApplied && (
-              <button onClick={handleClearFilters} className="px-3 py-1.5 text-xs font-medium rounded-lg bg-stone-100 text-stone-600 hover:bg-stone-200 transition-all shrink-0">
-                Clear
-              </button>
-            )}
-          </div>
-        )}
+          )}
+        </div>
 
-        {/* Coordinate hint while placing */}
-        {pendingLngLat && (
-          <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 px-3 py-1.5 rounded-full text-xs font-semibold bg-white/90 shadow border border-stone-200 text-stone-700 pointer-events-none">
-            📍 {pendingLngLat.lat.toFixed(6)}, {pendingLngLat.lng.toFixed(6)}
-          </div>
-        )}
-
-
+        {/* Row 2 — attribute toggle filters */}
+        <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-stone-100">
+          <FilterGroup label="Photos" icon="📷" value={filterPhotos} onChange={setFilterPhotos} />
+          <FilterGroup label="PDF" icon="📄" value={filterPdf} onChange={setFilterPdf} />
+          <FilterGroup label="Area (map)" icon="📐" value={filterAreaMap} onChange={setFilterAreaMap} />
+          <FilterGroup label="Area (RP)" icon="📏" value={filterAreaRp} onChange={setFilterAreaRp} />
+          <button
+            onClick={handleApplyFilters}
+            className="px-3 py-1.5 text-xs font-bold rounded-md bg-blue-600 text-white hover:bg-blue-700 transition-all ml-auto"
+          >
+            Apply
+          </button>
+        </div>
       </div>
 
-      {/* ── SIDEBAR ── */}
-      <div className="flex flex-col shrink-0 border-l border-stone-200 bg-white overflow-hidden" style={{ width: 340 }}>
+      {/* ── MAP + SIDEBAR ROW ── */}
+      <div className="flex flex-1 min-h-0 overflow-hidden">
+
+        {/* ── MAP ── */}
+        <div className="flex-1 relative min-w-0 min-h-0">
+          <div ref={containerRef} style={{ position: 'absolute', inset: 0 }} />
+
+          {/* Coordinate hint while placing */}
+          {pendingLngLat && (
+            <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 px-3 py-1.5 rounded-full text-xs font-semibold bg-white/90 shadow border border-stone-200 text-stone-700 pointer-events-none">
+              📍 {pendingLngLat.lat.toFixed(6)}, {pendingLngLat.lng.toFixed(6)}
+            </div>
+          )}
+        </div>
+
+        {/* ── SIDEBAR ── */}
+        <div className="flex flex-col shrink-0 border-l border-stone-200 bg-white overflow-hidden" style={{ width: 340 }}>
 
         {/* Header */}
         <div className="shrink-0 px-4 pt-4 pb-3 border-b border-stone-100">
@@ -551,57 +621,6 @@ export default function ManualFincaMapper() {
                 onChange={e => setOverlayOpacity(Number(e.target.value))} className="w-16 accent-amber-500" />
             </label>
           )}
-        </div>
-
-        {/* Search */}
-        <div className="shrink-0 px-4 py-3 border-b border-stone-100 space-y-2">
-          <div className="flex gap-2">
-            <input type="text" placeholder="Search finca, owner, neighborhood…" value={searchQ}
-              onChange={e => setSearchQ(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleSearch()}
-              className="flex-1 px-2.5 py-1.5 text-xs rounded-md border border-stone-200 bg-white focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-400" />
-            <button onClick={handleSearch} disabled={searching}
-              className="px-3 py-1.5 text-xs font-semibold rounded-md bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 transition-all">
-              {searching ? '…' : 'Search'}
-            </button>
-          </div>
-          <select value={searchBarrio} onChange={e => setSearchBarrio(e.target.value)}
-            className="w-full px-2 py-1.5 text-xs rounded-md border border-stone-200 bg-white focus:outline-none focus:ring-2 focus:ring-blue-300">
-            <option value="all">All neighborhoods</option>
-            {barrios.map(b => <option key={b} value={b}>{b}</option>)}
-          </select>
-          <div className="flex gap-2 items-center">
-            <span className="text-xs text-stone-400 shrink-0">Area m²:</span>
-            <input type="number" placeholder="Min" value={searchMinArea} onChange={e => setSearchMinArea(e.target.value)}
-              className="w-16 px-2 py-1.5 text-xs rounded-md border border-stone-200 bg-white focus:outline-none focus:ring-2 focus:ring-blue-300" />
-            <span className="text-xs text-stone-300">–</span>
-            <input type="number" placeholder="Max" value={searchMaxArea} onChange={e => setSearchMaxArea(e.target.value)}
-              className="w-16 px-2 py-1.5 text-xs rounded-md border border-stone-200 bg-white focus:outline-none focus:ring-2 focus:ring-blue-300" />
-            {filtered !== null && (
-              <button onClick={handleClearSearch} className="ml-auto text-xs text-blue-500 hover:text-blue-700 underline">Clear</button>
-            )}
-          </div>
-          {/* Owner filter */}
-          <input
-            type="text"
-            placeholder="Filter by owner / propietario…"
-            value={searchPropietario}
-            onChange={e => setSearchPropietario(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && handleSearch()}
-            className="w-full px-2.5 py-1.5 text-xs rounded-md border border-stone-200 bg-white focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-400"
-          />
-          {/* Patrimonio category filter */}
-          <select
-            value={searchPatrimonio}
-            onChange={e => setSearchPatrimonio(e.target.value)}
-            className="w-full px-2 py-1.5 text-xs rounded-md border border-stone-200 bg-white focus:outline-none focus:ring-2 focus:ring-blue-300"
-          >
-            <option value="">All patrimonio categories</option>
-            <option value="1">Category 1</option>
-            <option value="2">Category 2</option>
-            <option value="3">Category 3</option>
-            <option value="4">Category 4</option>
-            <option value="5">Category 5</option>
-          </select>
         </div>
 
         {/* Add mode banner */}
@@ -725,6 +744,8 @@ export default function ManualFincaMapper() {
           </div>
         </div>
       </div>
+
+      </div>{/* end map+sidebar row */}
     </div>
   )
 }
