@@ -52,7 +52,7 @@ function FincaMiniMap({ lat, lng, finca }) {
   if (lat == null || lng == null) return null
 
   return (
-    <div className="relative rounded-xl overflow-hidden border border-stone-200 shadow-sm" style={{ height: 320 }}>
+    <div className="relative overflow-hidden border border-slate-200 shadow-sm" style={{ height: 320 }}>
       <div ref={containerRef} style={{ position: 'absolute', inset: 0 }} />
       {/* Crosshair overlay to show center */}
       <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
@@ -87,7 +87,7 @@ function TopCarousel({ lat, lng, finca, photo1, photo2, photo3 }) {
   const next = () => setIdx(i => (i + 1) % slides.length)
 
   return (
-    <div className="relative rounded-xl overflow-hidden border border-stone-200 shadow-sm bg-stone-900" style={{ height: 320 }}>
+    <div className="relative overflow-hidden border border-slate-200 shadow-sm bg-stone-900" style={{ height: 320 }}>
 
       {/* Slides */}
       {slides.map((slide, i) => (
@@ -141,7 +141,7 @@ function TopCarousel({ lat, lng, finca, photo1, photo2, photo3 }) {
           {/* Slide label */}
           <div className="absolute top-3 left-3 z-30">
             <span className="text-[10px] font-semibold bg-black/50 text-white px-2 py-1 rounded backdrop-blur-sm">
-              {idx === 0 ? '🗺 Map' : `📷 Photo ${idx}`}
+              {idx === 0 ? 'Map' : `Photo ${idx}`}
             </span>
           </div>
         </>
@@ -154,16 +154,16 @@ function TopCarousel({ lat, lng, finca, photo1, photo2, photo3 }) {
 function Field({ label, value, onChange, type = 'text', readOnly = false, placeholder = '' }) {
   return (
     <div className="flex flex-col gap-1">
-      <label className="text-xs font-semibold text-stone-400 uppercase tracking-wider">{label}</label>
+      <label className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest">{label}</label>
       {readOnly ? (
-        <div className="text-sm text-stone-700 py-1">{value || <span className="text-stone-300 italic">—</span>}</div>
+        <div className="text-sm text-slate-700 py-1">{value || <span className="text-slate-300 italic">—</span>}</div>
       ) : (
         <input
           type={type}
           value={value || ''}
           onChange={e => onChange(e.target.value)}
           placeholder={placeholder}
-          className="px-3 py-2 text-sm rounded-lg border border-stone-200 bg-white focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-400 transition-all"
+          className="px-2.5 py-1.5 text-sm rounded border border-slate-300 bg-white focus:outline-none focus:ring-1 focus:ring-[#005baa] focus:border-[#005baa] transition-colors"
         />
       )}
     </div>
@@ -173,13 +173,13 @@ function Field({ label, value, onChange, type = 'text', readOnly = false, placeh
 function TextArea({ label, value, onChange, placeholder = '', rows = 3 }) {
   return (
     <div className="flex flex-col gap-1">
-      <label className="text-xs font-semibold text-stone-400 uppercase tracking-wider">{label}</label>
+      <label className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest">{label}</label>
       <textarea
         value={value || ''}
         onChange={e => onChange(e.target.value)}
         placeholder={placeholder}
         rows={rows}
-        className="px-3 py-2 text-sm rounded-lg border border-stone-200 bg-white focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-400 transition-all resize-y"
+        className="px-2.5 py-1.5 text-sm rounded border border-slate-300 bg-white focus:outline-none focus:ring-1 focus:ring-[#005baa] focus:border-[#005baa] transition-colors resize-y"
       />
     </div>
   )
@@ -187,16 +187,16 @@ function TextArea({ label, value, onChange, placeholder = '', rows = 3 }) {
 
 function SectionHeader({ title, subtitle }) {
   return (
-    <div className="mb-4">
-      <h3 className="text-sm font-bold text-stone-700 uppercase tracking-widest">{title}</h3>
-      {subtitle && <p className="text-xs text-stone-400 mt-0.5">{subtitle}</p>}
+    <div className="mb-4 pb-3 border-b border-slate-100">
+      <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-widest">{title}</h3>
+      {subtitle && <p className="text-xs text-slate-400 mt-0.5">{subtitle}</p>}
     </div>
   )
 }
 
 function Section({ children, className = '' }) {
   return (
-    <div className={`bg-white rounded-xl border border-stone-100 shadow-sm p-5 ${className}`}>
+    <div className={`bg-white border border-slate-200 p-5 shadow-sm ${className}`}>
       {children}
     </div>
   )
@@ -242,18 +242,18 @@ function PhotoSlot({ slot, url, onUpload, onDelete, uploading }) {
     <div className="relative group">
       <div
         className={`
-          w-full aspect-square rounded-xl border-2 overflow-hidden cursor-pointer transition-all
-          ${fullUrl ? 'border-stone-200' : 'border-dashed border-stone-200 hover:border-blue-300 bg-stone-50 hover:bg-blue-50'}
+          w-full aspect-square border-2 overflow-hidden cursor-pointer transition-all
+          ${fullUrl ? 'border-slate-200' : 'border-dashed border-slate-300 hover:border-[#005baa] bg-slate-50 hover:bg-blue-50'}
         `}
         onClick={() => !fullUrl && inputRef.current?.click()}
       >
         {uploading ? (
-          <div className="flex items-center justify-center h-full text-xs text-stone-400">Uploading…</div>
+          <div className="flex items-center justify-center h-full text-xs text-slate-400">Uploading…</div>
         ) : fullUrl ? (
           <img src={fullUrl} alt={`Photo ${slot}`} className="w-full h-full object-cover" />
         ) : (
-          <div className="flex flex-col items-center justify-center h-full gap-1 text-stone-300">
-            <span className="text-2xl">📷</span>
+          <div className="flex flex-col items-center justify-center h-full gap-1 text-slate-400">
+            <span className="text-lg font-light">+</span>
             <span className="text-xs">Photo {slot}</span>
           </div>
         )}
@@ -265,13 +265,13 @@ function PhotoSlot({ slot, url, onUpload, onDelete, uploading }) {
           onClick={() => inputRef.current?.click()}
           className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
         >
-          <span className="bg-blue-600 text-white text-xs font-semibold px-3 py-1.5 rounded-lg shadow">Upload</span>
+          <span className="bg-[#005baa] text-white text-xs font-medium px-3 py-1.5 rounded shadow-sm">Upload</span>
         </button>
       )}
       {fullUrl && !uploading && (
         <button
           onClick={() => onDelete(slot)}
-          className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-red-500 text-white text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow"
+          className="absolute top-1.5 right-1.5 w-6 h-6 rounded bg-[#b5121b] text-white text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow"
           title="Remove photo"
         >
           ✕
@@ -525,15 +525,15 @@ export default function FincaDetail() {
   // ── Render ───────────────────────────────────────────────────────────
   if (loading) {
     return (
-      <div className="flex h-screen items-center justify-center bg-stone-50">
-        <div className="text-stone-400 text-sm animate-pulse">Loading finca…</div>
+      <div className="flex h-screen items-center justify-center bg-slate-50">
+        <div className="text-slate-400 text-sm animate-pulse">Loading finca…</div>
       </div>
     )
   }
 
   if (!finca) {
     return (
-      <div className="flex h-screen items-center justify-center bg-stone-50">
+      <div className="flex h-screen items-center justify-center bg-slate-50">
         <div className="text-red-500 text-sm">{error || 'Finca not found'}</div>
       </div>
     )
@@ -545,67 +545,64 @@ export default function FincaDetail() {
   const foundCount = pdfExtracted ? FIELD_MAP.filter(fd => pdfExtracted[fd.key]).length : 0
 
   return (
-    <div className="bg-stone-50" style={{ fontFamily: 'system-ui, sans-serif', height: '100vh', overflowY: 'auto', overflowX: 'hidden' }}>
+    <div className="bg-slate-50" style={{ fontFamily: 'system-ui, sans-serif', height: '100vh', overflowY: 'auto', overflowX: 'hidden' }}>
 
       {/* ── Sticky header bar ─────────────────────────────────────── */}
-      <div className="sticky top-0 z-50 bg-white border-b border-stone-200 shadow-sm">
-        <div className="max-w-6xl mx-auto px-6 h-14 flex items-center gap-4">
-          <button
-            onClick={() => navigate('/finca')}
-            className="flex items-center gap-1.5 text-sm text-stone-500 hover:text-stone-800 transition-colors font-medium"
-          >
-            ← Map
-          </button>
-          <div className="w-px h-5 bg-stone-200" />
-          <div className="flex items-center gap-2 flex-1 min-w-0">
-            <span className="text-sm font-bold text-stone-800 truncate">
-              Finca {finca.finca || fincaSlug}
-            </span>
-            {finca.barrio && (
-              <span className="text-xs bg-stone-100 text-stone-500 px-2 py-0.5 rounded-full truncate hidden sm:block">
-                {finca.barrio}
+      <div className="sticky top-0 z-50">
+        <div className="h-[3px] bg-[#005baa] w-full" />
+        <div className="bg-white border-b border-slate-200 shadow-sm">
+          <div className="max-w-6xl mx-auto px-6 h-14 flex items-center gap-4">
+            <button
+              onClick={() => navigate('/finca')}
+              className="flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-800 transition-colors font-medium"
+            >
+              ← Map
+            </button>
+            <div className="w-px h-5 bg-slate-200" />
+            <div className="flex items-center gap-2 flex-1 min-w-0">
+              <span className="text-sm font-semibold text-slate-800 truncate">
+                Finca {finca.finca || fincaSlug}
               </span>
-            )}
-            <span
-              className="text-xs font-semibold px-2 py-0.5 rounded-full shrink-0"
-              style={{ background: cc.bg, color: cc.border }}
-            >
-              {cc.label}
-            </span>
-          </div>
+              {finca.barrio && (
+                <span className="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded truncate hidden sm:block">
+                  {finca.barrio}
+                </span>
+              )}
+            </div>
 
-          {/* Save / Delete actions */}
-          <div className="flex items-center gap-2 shrink-0">
-            {saved && (
-              <span className="text-xs text-green-600 font-semibold hidden sm:block">✓ Saved</span>
-            )}
-            {error && (
-              <span className="text-xs text-red-500 hidden sm:block truncate max-w-48">{error}</span>
-            )}
-            <button
-              onClick={() => { setDeleteConfirm(false) }}
-              style={{ display: deleteConfirm ? '' : 'none' }}
-              className="text-xs text-stone-400 hover:text-stone-600 px-2 py-1.5"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleDelete}
-              className={`text-xs font-semibold px-3 py-1.5 rounded-lg transition-all ${
-                deleteConfirm
-                  ? 'bg-red-600 text-white hover:bg-red-700'
-                  : 'text-red-400 hover:text-red-600 hover:bg-red-50 border border-red-100'
-              }`}
-            >
-              {deleteConfirm ? 'Confirm Delete?' : 'Delete'}
-            </button>
-            <button
-              onClick={handleSave}
-              disabled={saving}
-              className="text-sm font-semibold px-4 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-50 transition-all shadow-sm"
-            >
-              {saving ? 'Saving…' : 'Save'}
-            </button>
+            {/* Save / Delete actions */}
+            <div className="flex items-center gap-2 shrink-0">
+              {saved && (
+                <span className="text-xs text-[#005baa] font-medium hidden sm:block">✓ Saved</span>
+              )}
+              {error && (
+                <span className="text-xs text-red-600 hidden sm:block truncate max-w-48">{error}</span>
+              )}
+              <button
+                onClick={() => { setDeleteConfirm(false) }}
+                style={{ display: deleteConfirm ? '' : 'none' }}
+                className="text-xs text-slate-400 hover:text-slate-600 px-2 py-1.5"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDelete}
+                className={`transition-all ${
+                  deleteConfirm
+                    ? 'text-xs font-semibold px-3 py-1.5 rounded bg-[#b5121b] text-white hover:bg-red-800'
+                    : 'text-xs text-[#b5121b] hover:bg-red-50 border border-slate-200 px-3 py-1.5 rounded font-medium'
+                }`}
+              >
+                {deleteConfirm ? 'Confirm Delete?' : 'Delete'}
+              </button>
+              <button
+                onClick={handleSave}
+                disabled={saving}
+                className="text-sm font-medium px-4 py-1.5 rounded bg-[#005baa] hover:bg-[#004a8f] text-white disabled:opacity-50 shadow-sm"
+              >
+                {saving ? 'Saving…' : 'Save'}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -621,7 +618,7 @@ export default function FincaDetail() {
 
         {/* Error banner */}
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-lg">
+          <div className="bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded">
             {error}
           </div>
         )}
@@ -631,13 +628,11 @@ export default function FincaDetail() {
           <Section>
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h3 className="text-sm font-bold text-stone-700 uppercase tracking-widest">📄 Extracted from PDF</h3>
-                <p className="text-xs text-stone-400 mt-0.5">Review each field before applying to the form</p>
+                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-widest">Extracted from PDF</h3>
+                <p className="text-xs text-slate-400 mt-0.5">Review each field before applying to the form</p>
               </div>
               <div className="flex items-center gap-2">
-                <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${
-                  foundCount > FIELD_MAP.length / 2 ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'
-                }`}>
+                <span className="text-xs text-slate-500 font-medium">
                   {foundCount} / {FIELD_MAP.length} fields found
                 </span>
               </div>
@@ -646,24 +641,23 @@ export default function FincaDetail() {
             <div className="grid grid-cols-1 gap-4 mb-4">
               {/* Found fields */}
               <div>
-                <div className="text-xs font-bold text-green-700 uppercase tracking-wider mb-2 flex items-center gap-1">
-                  <span className="w-4 h-4 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-xs">✓</span>
+                <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1">
                   Found ({foundCount})
                 </div>
                 <div className="space-y-2">
                   {FIELD_MAP.filter(fd => pdfExtracted[fd.key]).map(fd => (
-                    <div key={fd.key} className="flex items-center gap-2 bg-green-50 border border-green-100 rounded-lg px-3 py-2">
-                      <span className="text-green-500 text-xs shrink-0">✓</span>
-                      <span className="text-xs font-medium text-stone-600 w-32 shrink-0">{fd.label}</span>
+                    <div key={fd.key} className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded px-3 py-2">
+                      <span className="text-[#005baa] text-xs shrink-0">✓</span>
+                      <span className="text-xs font-medium text-slate-600 w-32 shrink-0">{fd.label}</span>
                       <input
                         type="text"
                         value={editedExtracted[fd.key] ?? pdfExtracted[fd.key]}
                         onChange={e => setEditedExtracted(prev => ({ ...prev, [fd.key]: e.target.value }))}
-                        className="flex-1 min-w-0 px-2 py-1 text-xs rounded border border-green-200 bg-white focus:outline-none focus:ring-1 focus:ring-green-400"
+                        className="flex-1 min-w-0 px-2.5 py-1.5 text-xs rounded border border-slate-300 bg-white focus:outline-none focus:ring-1 focus:ring-[#005baa] focus:border-[#005baa] transition-colors"
                       />
                       <button
                         onClick={() => applyOneField(fd.key)}
-                        className="shrink-0 text-xs px-2 py-1 rounded bg-green-600 text-white hover:bg-green-700 transition-all"
+                        className="shrink-0 text-xs px-2 py-1 rounded bg-[#005baa] text-white hover:bg-[#004a8f]"
                       >Apply</button>
                     </div>
                   ))}
@@ -672,36 +666,35 @@ export default function FincaDetail() {
 
               {/* Not found fields */}
               <div>
-                <div className="text-xs font-bold text-stone-400 uppercase tracking-wider mb-2 flex items-center gap-1">
-                  <span className="w-4 h-4 rounded-full bg-stone-100 flex items-center justify-center text-stone-400 text-xs">✗</span>
+                <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1">
                   Not Found ({FIELD_MAP.length - foundCount})
                 </div>
                 <div className="space-y-2">
                   {FIELD_MAP.filter(fd => !pdfExtracted[fd.key]).map(fd => (
-                    <div key={fd.key} className="flex items-center gap-2 bg-stone-50 border border-stone-100 rounded-lg px-3 py-2">
-                      <span className="text-stone-300 text-xs shrink-0">✗</span>
-                      <span className="text-xs font-medium text-stone-400 w-32 shrink-0">{fd.label}</span>
-                      <span className="text-xs text-stone-300 italic">Not found in PDF</span>
+                    <div key={fd.key} className="flex items-center gap-2 bg-white border border-slate-100 rounded px-3 py-2">
+                      <span className="text-slate-300 text-xs shrink-0">✗</span>
+                      <span className="text-xs font-medium text-slate-400 w-32 shrink-0">{fd.label}</span>
+                      <span className="text-xs text-slate-300 italic">Not found in PDF</span>
                     </div>
                   ))}
                 </div>
               </div>
             </div>
 
-            <div className="flex items-center gap-3 pt-3 border-t border-stone-100">
+            <div className="flex items-center gap-3 pt-3 border-t border-slate-100">
               <button
                 onClick={applyExtracted}
-                className="px-5 py-2 text-sm font-bold rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-sm"
+                className="px-4 py-1.5 text-sm font-medium rounded bg-[#005baa] text-white hover:bg-[#004a8f] shadow-sm"
               >
                 Apply All Found Fields
               </button>
               <button
                 onClick={() => { setPdfExtracted(null); setEditedExtracted({}) }}
-                className="px-4 py-2 text-sm font-medium rounded-xl bg-stone-100 text-stone-600 hover:bg-stone-200 transition-all"
+                className="px-4 py-1.5 text-sm font-medium rounded border border-slate-300 bg-white text-slate-600 hover:bg-slate-50"
               >
                 Dismiss
               </button>
-              <span className="text-xs text-stone-400 ml-auto">Values are editable above before applying</span>
+              <span className="text-xs text-slate-400 ml-auto">Values are editable above before applying</span>
             </div>
           </Section>
         )}
@@ -720,11 +713,11 @@ export default function FincaDetail() {
               </div>
               <div className="col-span-2">
                 <div className="flex flex-col gap-1">
-                  <label className="text-xs font-semibold text-stone-400 uppercase tracking-wider">Barrio / Neighborhood</label>
+                  <label className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest">Barrio / Neighborhood</label>
                   <select
                     value={finca.barrio || ''}
                     onChange={e => set('barrio')(e.target.value)}
-                    className="px-3 py-2 text-sm rounded-lg border border-stone-200 bg-white focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-400 transition-all"
+                    className="px-2.5 py-1.5 text-sm rounded border border-slate-300 bg-white focus:outline-none focus:ring-1 focus:ring-[#005baa] focus:border-[#005baa] transition-colors"
                   >
                     <option value="">— Select neighborhood —</option>
                     {BARRIOS.map(b => <option key={b} value={b}>{b}</option>)}
@@ -733,11 +726,11 @@ export default function FincaDetail() {
               </div>
               <div className="col-span-2">
                 <div className="flex flex-col gap-1">
-                  <label className="text-xs font-semibold text-stone-400 uppercase tracking-wider">Categoria Patrimonio</label>
+                  <label className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest">Categoria Patrimonio</label>
                   <select
                     value={finca.categoria_patrimonio || ''}
                     onChange={e => set('categoria_patrimonio')(e.target.value)}
-                    className="px-3 py-2 text-sm rounded-lg border border-stone-200 bg-white focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-400"
+                    className="px-2.5 py-1.5 text-sm rounded border border-slate-300 bg-white focus:outline-none focus:ring-1 focus:ring-[#005baa] focus:border-[#005baa] transition-colors"
                   >
                     <option value="">— Select category —</option>
                     <option value="1">1</option>
@@ -750,11 +743,11 @@ export default function FincaDetail() {
               </div>
               <div className="col-span-2">
                 <div className="flex flex-col gap-1">
-                  <label className="text-xs font-semibold text-stone-400 uppercase tracking-wider">Map Confidence</label>
+                  <label className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest">Map Confidence</label>
                   <select
                     value={String(finca.confidence)}
                     onChange={e => set('confidence')(parseFloat(e.target.value))}
-                    className="px-3 py-2 text-sm rounded-lg border border-stone-200 bg-white focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-400"
+                    className="px-2.5 py-1.5 text-sm rounded border border-slate-300 bg-white focus:outline-none focus:ring-1 focus:ring-[#005baa] focus:border-[#005baa] transition-colors"
                   >
                     <option value="0.9">High</option>
                     <option value="0.7">Medium</option>
@@ -772,7 +765,7 @@ export default function FincaDetail() {
               <Field label="Contact Name" value={finca.contact_nombre} onChange={set('contact_nombre')} placeholder="Full name" />
               <Field label="Email" value={finca.contact_email} onChange={set('contact_email')} type="email" placeholder="email@example.com" />
               <Field label="Phone / Tel" value={finca.contact_tel} onChange={set('contact_tel')} type="tel" placeholder="+507 …" />
-              <div className="border-t border-stone-100 pt-4">
+              <div className="border-t border-slate-100 pt-4">
                 <Field label="Domicilio" value={finca.domicilio} onChange={set('domicilio')} placeholder="Address on file" />
               </div>
               <Field label="Uso del Suelo" value={finca.uso_del_suelo} onChange={set('uso_del_suelo')} />
@@ -790,31 +783,29 @@ export default function FincaDetail() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-2 mb-1">
-                <span className="w-3 h-3 rounded-full bg-amber-400 shrink-0" />
-                <span className="text-xs font-bold text-stone-600 uppercase tracking-wider">Area m² — Physical Map</span>
+                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Area m² — Physical Map</span>
               </div>
               <input
                 type="number"
                 value={finca.area_m2_map || ''}
                 onChange={e => set('area_m2_map')(e.target.value)}
                 placeholder="e.g. 721.5"
-                className="px-3 py-2 text-sm rounded-lg border border-amber-200 bg-amber-50 focus:outline-none focus:ring-2 focus:ring-amber-300 focus:border-amber-400 transition-all"
+                className="px-2.5 py-1.5 text-sm rounded border border-slate-300 bg-white focus:outline-none focus:ring-1 focus:ring-[#005baa] focus:border-[#005baa] transition-colors"
               />
-              <p className="text-xs text-stone-400">Measured from the physical catastral map</p>
+              <p className="text-xs text-slate-400">Measured from the physical catastral map</p>
             </div>
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-2 mb-1">
-                <span className="w-3 h-3 rounded-full bg-blue-400 shrink-0" />
-                <span className="text-xs font-bold text-stone-600 uppercase tracking-wider">Area m² — Registro Público</span>
+                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Area m² — Registro Público</span>
               </div>
               <input
                 type="text"
                 value={finca.superficie_inicial_rp || ''}
                 onChange={e => set('superficie_inicial_rp')(e.target.value)}
                 placeholder="e.g. 721M2.5CM2"
-                className="px-3 py-2 text-sm rounded-lg border border-blue-200 bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-400 transition-all"
+                className="px-2.5 py-1.5 text-sm rounded border border-slate-300 bg-white focus:outline-none focus:ring-1 focus:ring-[#005baa] focus:border-[#005baa] transition-colors"
               />
-              <p className="text-xs text-stone-400">As stated in the Registro Público document</p>
+              <p className="text-xs text-slate-400">As stated in the Registro Público document</p>
             </div>
           </div>
           <div className="mt-4">
@@ -839,13 +830,13 @@ export default function FincaDetail() {
             <Field label="Fecha Inscripción" value={finca.fecha_inscripcion} onChange={set('fecha_inscripcion')} placeholder="DD/MM/YYYY" />
             <Field label="Cédula Catastral" value={finca.cedula_catastral} onChange={set('cedula_catastral')} placeholder="—" />
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-4 pt-4 border-t border-stone-100">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-4 pt-4 border-t border-slate-100">
             <Field label="Valor" value={finca.valor} onChange={set('valor')} placeholder="0.00" />
             <Field label="Valor del Terreno" value={finca.valor_terreno} onChange={set('valor_terreno')} placeholder="0.00" />
             <Field label="Valor de Mejoras" value={finca.valor_mejoras} onChange={set('valor_mejoras')} placeholder="0.00" />
             <Field label="Valor del Traspaso" value={finca.valor_traspaso} onChange={set('valor_traspaso')} placeholder="0.00" />
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-4 pt-4 border-t border-stone-100">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-4 pt-4 border-t border-slate-100">
             <Field label="Número de Plano" value={finca.numero_plano} onChange={set('numero_plano')} placeholder="—" />
             <Field label="Fecha Construcción" value={finca.fecha_construccion} onChange={set('fecha_construccion')} placeholder="—" />
             <Field label="Fecha Ocupación" value={finca.fecha_ocupacion} onChange={set('fecha_ocupacion')} placeholder="—" />
@@ -853,7 +844,7 @@ export default function FincaDetail() {
             <Field label="Por Edificio" value={finca.por_edificio} onChange={set('por_edificio')} placeholder="—" />
             <Field label="% Proindiviso" value={finca.proindiviso_pct} onChange={set('proindiviso_pct')} placeholder="—" />
           </div>
-          <div className="mt-4 pt-4 border-t border-stone-100">
+          <div className="mt-4 pt-4 border-t border-slate-100">
             <TextArea label="Descripción RP" value={finca.descripcion_rp} onChange={set('descripcion_rp')} rows={3} />
           </div>
         </Section>
@@ -900,24 +891,23 @@ export default function FincaDetail() {
           <SectionHeader title="Registro Público PDF" subtitle="Upload the official RP document — fields can be auto-populated from it" />
           <div className="flex flex-col gap-4">
             {finca.pdf_path ? (
-              <div className="flex items-center gap-4 p-4 bg-green-50 border border-green-200 rounded-xl">
-                <span className="text-2xl">📄</span>
+              <div className="flex items-center gap-4 bg-slate-50 border border-slate-200 rounded px-4 py-3">
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-green-800">PDF on file</p>
-                  <p className="text-xs text-green-600 truncate">{finca.pdf_path}</p>
+                  <p className="text-sm font-semibold text-slate-700">PDF on file</p>
+                  <p className="text-xs text-slate-500 truncate">{finca.pdf_path}</p>
                 </div>
                 <div className="flex gap-2 shrink-0">
                   <a
                     href={`${BASE}/api/fincas/${id}/pdf`}
                     target="_blank"
                     rel="noreferrer"
-                    className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-green-600 text-white hover:bg-green-700 transition-all"
+                    className="text-xs font-medium px-3 py-1.5 rounded bg-[#005baa] text-white hover:bg-[#004a8f]"
                   >
                     Download
                   </a>
                   <button
                     onClick={() => pdfInputRef.current?.click()}
-                    className="text-xs font-medium px-3 py-1.5 rounded-lg bg-white border border-green-300 text-green-700 hover:bg-green-100 transition-all"
+                    className="text-xs font-medium px-3 py-1.5 rounded border border-slate-300 bg-white text-slate-600 hover:bg-slate-50"
                   >
                     Replace
                   </button>
@@ -925,16 +915,15 @@ export default function FincaDetail() {
               </div>
             ) : (
               <div
-                className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-stone-200 rounded-xl cursor-pointer hover:border-blue-300 hover:bg-blue-50 transition-all"
+                className="flex flex-col items-center justify-center p-8 border-dashed border-2 border-slate-300 rounded cursor-pointer hover:border-[#005baa] hover:bg-blue-50 transition-all"
                 onClick={() => pdfInputRef.current?.click()}
               >
-                <span className="text-3xl mb-2">📤</span>
-                <p className="text-sm font-semibold text-stone-600">Upload Registro Público PDF</p>
-                <p className="text-xs text-stone-400 mt-1">Click to select a PDF file · Fields will be auto-extracted</p>
+                <p className="text-sm font-medium text-slate-600">No PDF uploaded</p>
+                <p className="text-xs text-slate-400 mt-1">Click to select a PDF file · Fields will be auto-extracted</p>
               </div>
             )}
             {pdfUploading && (
-              <div className="text-xs text-blue-600 animate-pulse text-center">Uploading and parsing PDF…</div>
+              <div className="text-xs text-[#005baa] text-center">Uploading and parsing PDF…</div>
             )}
             <input
               ref={pdfInputRef}
@@ -956,7 +945,7 @@ export default function FincaDetail() {
         </Section>
 
         {/* ── Audit footer ── */}
-        <div className="text-xs text-stone-400 flex flex-wrap gap-4 px-1 pb-6">
+        <div className="text-xs text-slate-400 flex flex-wrap gap-4 px-1 pb-6">
           <span>Added: {fmtDt(finca.added_at)}</span>
           <span>Last updated: {fmtDt(finca.updated_at)}{finca.updated_by ? ` by ${finca.updated_by}` : ''}</span>
         </div>
