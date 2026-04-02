@@ -5,6 +5,22 @@ import 'maplibre-gl/dist/maplibre-gl.css'
 import { api } from '../api'
 
 // ── Constants ──────────────────────────────────────────────────────────────
+const BARRIOS = [
+  'Casco Viejo (San Felipe)',
+  'Santa Ana',
+  'Barrio Chino',
+  'El Chorrillo',
+  'La Exposición',
+  'Calidonia',
+  'Bella Vista',
+  'Miraflores',
+  'San Francisco',
+  'El Cangrejo',
+  'Paitilla',
+  'Punta Pacífica',
+  'Otro',
+]
+
 const CENTER    = [-79.5371, 8.9565]
 const ZOOM      = 16
 const LS_KEY    = 'manual_fincas'
@@ -487,7 +503,7 @@ export default function ManualFincaMapper() {
             className="min-w-[140px] bg-white border border-slate-300 rounded px-2.5 py-1.5 text-xs text-slate-700 focus:outline-none focus:ring-1 focus:ring-[#005baa] focus:border-[#005baa]"
           >
             <option value="all">All neighborhoods</option>
-            {barrios.map(b => <option key={b} value={b}>{b}</option>)}
+            {BARRIOS.map(b => <option key={b} value={b}>{b}</option>)}
           </select>
           <input
             type="text"
@@ -546,8 +562,7 @@ export default function ManualFincaMapper() {
         <div className="flex flex-wrap items-center gap-3 pt-1.5 border-t border-slate-100">
           <FilterGroup label="Photos" value={filterPhotos} onChange={setFilterPhotos} />
           <FilterGroup label="PDF" value={filterPdf} onChange={setFilterPdf} />
-          <FilterGroup label="Area (map)" value={filterAreaMap} onChange={setFilterAreaMap} />
-          <FilterGroup label="Area (RP)" value={filterAreaRp} onChange={setFilterAreaRp} />
+
           <button
             onClick={handleApplyFilters}
             className="bg-[#005baa] hover:bg-[#004a8f] text-white text-xs font-medium px-3 py-1.5 rounded ml-auto transition-colors"
