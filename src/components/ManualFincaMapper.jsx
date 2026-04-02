@@ -594,6 +594,10 @@ export default function ManualFincaMapper() {
           <div className="flex items-center justify-between mb-1">
             <span className="text-[10px] font-semibold uppercase tracking-widest text-slate-400">Finca Mapper</span>
             <button
+              onClick={() => navigate('/backups')}
+              className="text-xs text-slate-400 hover:text-slate-600 transition-colors"
+            >Backups</button>
+            <button
               onClick={() => { localStorage.removeItem('finca_token'); window.location.href = '/login' }}
               className="text-xs text-slate-400 hover:text-[#b5121b] transition-colors"
             >Sign out</button>

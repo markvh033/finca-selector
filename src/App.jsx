@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import ManualFincaMapper from './components/ManualFincaMapper';
 import FincaDetail from './pages/FincaDetail';
+import Backups from './pages/Backups';
 import LoginPage from './components/LoginPage';
 
 function RequireAuth({ children }) {
@@ -28,6 +29,14 @@ export default function App() {
           element={
             <RequireAuth>
               <FincaDetail />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/backups"
+          element={
+            <RequireAuth>
+              <Backups />
             </RequireAuth>
           }
         />

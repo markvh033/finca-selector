@@ -7,6 +7,9 @@ const multer = require('multer')
 const path = require('path')
 const fs = require('fs')
 const { Pool } = require('pg')
+const { S3Client, PutObjectCommand, ListObjectsV2Command, GetObjectCommand } = require('@aws-sdk/client-s3')
+const { getSignedUrl } = require('@aws-sdk/s3-request-presigner')
+const cron = require('node-cron')
 
 // pdf-parse@1.1.1 — simple async function: pdfParse(buffer) => { text, ... }
 let pdfParse
@@ -19,6 +22,18 @@ app.use(express.json())
 const pool = new Pool({ connectionString: process.env.DATABASE_URL })
 const JWT_SECRET = process.env.JWT_SECRET || 'dev_secret'
 const PORT = process.env.PORT || 3001
+
+// ── S3 client ──────────────────────────────────────────────────────────────
+const s3 = new S3Client({
+  endpoint: process.env.BUCKET_ENDPOINT,
+  region: process.env.BUCKET_REGION || 'auto',
+  credentials: {
+    accessKeyId: process.env.BUCKET_ACCESS_KEY_ID,
+    secretAccessKey: process.env.BUCKET_SECRET_ACCESS_KEY,
+  },
+  forcePathStyle: false,  // virtual-host style
+})
+const BUCKET_NAME = process.env.BUCKET_NAME
 
 // ── Data volume root ───────────────────────────────────────────────────────
 const DATA_ROOT = process.env.DATA_ROOT || path.join(__dirname, '..', 'data')
@@ -597,6 +612,80 @@ function parseRegistroPublico(rawText) {
 
   return result
 }
+
+// ── Backup ─────────────────────────────────────────────────────────────────
+async function runBackup() {
+  const { rows } = await pool.query('SELECT * FROM finca_points ORDER BY added_at DESC')
+  if (!rows.length) return null
+
+  const cols = Object.keys(rows[0])
+  const escape = v => {
+    if (v == null) return ''
+    const s = String(v)
+    if (s.includes(',') || s.includes('"') || s.includes('\n')) return `"${s.replace(/"/g, '""')}"`
+    return s
+  }
+  const csvLines = [
+    cols.join(','),
+    ...rows.map(r => cols.map(c => escape(r[c])).join(','))
+  ]
+  const csv = csvLines.join('\n')
+
+  const date = new Date().toISOString().slice(0, 10)
+  const key = `backups/fincas_${date}.csv`
+
+  await s3.send(new PutObjectCommand({
+    Bucket: BUCKET_NAME,
+    Key: key,
+    Body: csv,
+    ContentType: 'text/csv',
+  }))
+
+  return key
+}
+
+cron.schedule('0 2 * * *', async () => {
+  try {
+    const key = await runBackup()
+    console.log('[backup] Daily backup completed:', key)
+  } catch (e) {
+    console.error('[backup] Daily backup failed:', e.message)
+  }
+})
+
+// ── POST /api/backup/run ───────────────────────────────────────────────────
+app.post('/api/backup/run', auth, wrap(async (req, res) => {
+  const key = await runBackup()
+  res.json({ ok: true, key })
+}))
+
+// ── GET /api/backup/list ───────────────────────────────────────────────────
+app.get('/api/backup/list', auth, wrap(async (req, res) => {
+  const result = await s3.send(new ListObjectsV2Command({
+    Bucket: BUCKET_NAME,
+    Prefix: 'backups/',
+  }))
+  const files = (result.Contents || [])
+    .filter(o => o.Key.endsWith('.csv'))
+    .sort((a, b) => b.LastModified - a.LastModified)
+    .map(o => ({
+      key: o.Key,
+      filename: o.Key.replace('backups/', ''),
+      size: o.Size,
+      lastModified: o.LastModified,
+    }))
+  res.json(files)
+}))
+
+// ── GET /api/backup/download/:filename ────────────────────────────────────
+app.get('/api/backup/download/:filename', auth, wrap(async (req, res) => {
+  const key = `backups/${req.params.filename}`
+  const url = await getSignedUrl(s3, new GetObjectCommand({
+    Bucket: BUCKET_NAME,
+    Key: key,
+  }), { expiresIn: 900 })
+  res.json({ url })
+}))
 
 // ── GET /api/fincas/barrios ────────────────────────────────────────────────
 app.get('/api/barrios', auth, wrap(async (req, res) => {

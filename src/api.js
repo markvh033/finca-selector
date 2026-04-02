@@ -79,4 +79,9 @@ export const api = {
 
   // Barrios list
   getBarrios: () => apiFetch('/api/barrios'),
+
+  // Backups
+  listBackups: () => apiFetch('/api/backup/list'),
+  runBackup: () => apiFetch('/api/backup/run', { method: 'POST' }),
+  downloadBackup: (filename) => apiFetch(`/api/backup/download/${encodeURIComponent(filename)}`),
 }
